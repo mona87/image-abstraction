@@ -21,6 +21,13 @@ const flickr = new Flickr({
 	"accessTokenSecret": process.env.FLICKR_ACCESS_SECRET,
 });
 
+
+app.use(express.static('client'));
+
+app.get('/', (req, res) => {
+
+})
+
 //get recent searches
 app.get('/api/latest/imagesearch', (req,res) => {
 	Search.find({}, 'term when -_id', (err, result ) => {
