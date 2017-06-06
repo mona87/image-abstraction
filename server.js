@@ -5,10 +5,12 @@ const app = express();
 
 mongoose.connect(process.env.MONGOLAB_FLICKR_URI);
 
+mongoose.Promise = global.Promise;
 
 const model = mongoose.Schema({
 	term: String,
 	when: String,
+	date: { type: Date, default: Date.now },
 })
 
 const Search = mongoose.model('Search', model);
@@ -30,7 +32,7 @@ app.get('/', (req, res) => {
 
 //get recent searches
 app.get('/api/latest/imagesearch', (req,res) => {
-	Search.find({}, 'term when -_id', (err, result ) => {
+	Search.find({}, 'term when -_id',{sort: {date: -1}}, (err, result ) => {
 		if(err){
 			res.send({error: err})
 		} else{
@@ -70,6 +72,8 @@ app.get('/api/imagesearch/:param/:offset?', (req, res) => {
 		let newSearch = new Search({
 			term: param,
 			when: timestamp,
+			date: timestamp
+
 		})
 		newSearch.save();
 
